@@ -103,4 +103,11 @@ export class UsersService {
       },
     });
   }
+
+  async getAllUsers() {
+    return this.prisma.user.findMany({
+      select: { id: true, username: true, name: true },
+      orderBy: { name: 'asc' },
+    });
+  }
 }

@@ -96,4 +96,13 @@ export class UsersController {
   async getPublicProfile(@Param('username') username: string) {
     return this.usersService.getPublicProfile(username);
   }
+
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
+  @Get()
+  @ApiOperation({ summary: 'Get all users' })
+  @ApiResponse({ status: 200, description: 'Users retrieved successfully' })
+  async getAllUsers() {
+    return this.usersService.getAllUsers();
+  }
 }
