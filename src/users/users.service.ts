@@ -104,6 +104,7 @@ export class UsersService {
   }
 
   async getUserProfileById(userId: number) {
+    console.log('Fetching profile for userId:', userId);
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       select: {
@@ -116,7 +117,7 @@ export class UsersService {
       },
     });
     if (!user) {
-      throw new NotFoundException(userId);
+      throw new NotFoundException('user não encontrado');
     }
     return user;
   }

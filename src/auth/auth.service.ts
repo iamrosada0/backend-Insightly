@@ -17,7 +17,7 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto) {
-    const { email, username, password } = registerDto;
+    const { email, username, password, name } = registerDto;
 
     const existingUser = await this.prisma.user.findFirst({
       where: { OR: [{ email }, { username }] },
@@ -34,14 +34,16 @@ export class AuthService {
         email,
         username,
         password: hashedPassword,
+        name,
       },
-      select: { id: true, email: true, username: true },
+      select: { id: true, email: true, username: true, name: true },
     });
 
     const payload = {
       sub: user.id,
       username: user.username,
       email: user.email,
+      name: user.name,
     };
     const accessToken = this.jwtService.sign(payload);
 
@@ -54,8 +56,18 @@ export class AuthService {
 
   async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
+    console.log('Login attempt for email:', email);
 
-    const user = await this.prisma.user.findUnique({ where: { email } });
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        password: true,
+        name: true,
+      },
+    });
 
     if (!user) throw new UnauthorizedException('Credenciais inválidas');
 
@@ -67,20 +79,26 @@ export class AuthService {
       sub: user.id,
       username: user.username,
       email: user.email,
+      name: user.name,
     };
 
     const accessToken = this.jwtService.sign(payload);
 
     return {
       accessToken,
-      user: { id: user.id, email: user.email, username: user.username },
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        name: user.name,
+      },
     };
   }
 
   async validateUser(userId: number) {
     return this.prisma.user.findUnique({
       where: { id: userId },
-      select: { id: true, email: true, username: true },
+      select: { id: true, email: true, username: true, name: true },
     });
   }
 }
