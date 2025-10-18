@@ -8,12 +8,14 @@ import {
   Param,
   UseGuards,
   Req,
+  Logger,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { CreateLinkDto } from './dto/create-link.dto';
 import { UpdateLinkDto } from './dto/update-link.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { Public } from '../auth/public.decorator';
 import {
   ApiTags,
   ApiOperation,
@@ -36,7 +38,7 @@ export class UsersController {
     @Req() req: RequestWithUser,
     @Body() updateProfileDto: UpdateProfileDto,
   ) {
-    return this.usersService.updateProfile(req.user.id, updateProfileDto);
+    return this.usersService.updateProfile(req.user.sub, updateProfileDto);
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -48,7 +50,7 @@ export class UsersController {
     @Req() req: RequestWithUser,
     @Body() createLinkDto: CreateLinkDto,
   ) {
-    return this.usersService.createLink(req.user.id, createLinkDto);
+    return this.usersService.createLink(req.user.sub, createLinkDto);
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -57,7 +59,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Get all links for the authenticated user' })
   @ApiResponse({ status: 200, description: 'Links retrieved successfully' })
   async getLinks(@Req() req: RequestWithUser) {
-    return this.usersService.getLinks(req.user.id);
+    return this.usersService.getLinks(req.user.sub);
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -71,7 +73,7 @@ export class UsersController {
     @Body() updateLinkDto: UpdateLinkDto,
   ) {
     return this.usersService.updateLink(
-      req.user.id,
+      req.user.sub,
       parseInt(id, 10),
       updateLinkDto,
     );
@@ -83,10 +85,11 @@ export class UsersController {
   @ApiOperation({ summary: 'Delete a link' })
   @ApiResponse({ status: 200, description: 'Link deleted successfully' })
   async deleteLink(@Req() req: RequestWithUser, @Param('id') id: string) {
-    return this.usersService.deleteLink(req.user.id, parseInt(id, 10));
+    return this.usersService.deleteLink(req.user.sub, parseInt(id, 10));
   }
 
   @Get(':username')
+  @Public()
   @ApiOperation({ summary: 'Get public profile by username' })
   @ApiResponse({
     status: 200,
@@ -97,12 +100,26 @@ export class UsersController {
     return this.usersService.getPublicProfile(username);
   }
 
-  @UseGuards(AuthGuard('jwt'))
-  @ApiBearerAuth()
   @Get()
+  @Public()
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({ status: 200, description: 'Users retrieved successfully' })
   async getAllUsers() {
     return this.usersService.getAllUsers();
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
+  @Get('me')
+  @ApiOperation({ summary: 'Get authenticated user profile' })
+  @ApiResponse({
+    status: 200,
+    description: 'User profile retrieved successfully',
+  })
+  async getMyProfile(@Req() req: RequestWithUser) {
+    console.log('Authenticated user ID:', req.user.sub);
+    Logger.log('Rota /me chamada!', 'UsersController');
+    Logger.debug(`JWT payload: ${JSON.stringify(req.user)}`, 'UsersController');
+    return this.usersService.getUserProfileById(req.user.sub);
   }
 }

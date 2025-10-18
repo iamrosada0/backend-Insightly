@@ -73,14 +73,6 @@ export class UsersService {
             createdAt: true,
           },
         },
-        feedbacks: {
-          orderBy: { createdAt: 'desc' },
-          select: {
-            id: true,
-            text: true,
-            createdAt: true,
-          },
-        },
       },
     });
 
@@ -109,5 +101,23 @@ export class UsersService {
       select: { id: true, username: true, name: true },
       orderBy: { name: 'asc' },
     });
+  }
+
+  async getUserProfileById(userId: number) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        username: true,
+        name: true,
+        bio: true,
+        links: {
+          select: { id: true, title: true, url: true, createdAt: true },
+        },
+      },
+    });
+    if (!user) {
+      throw new NotFoundException(userId);
+    }
+    return user;
   }
 }
