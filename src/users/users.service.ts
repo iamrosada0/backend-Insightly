@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { CreateLinkDto } from './dto/create-link.dto';
@@ -9,14 +13,30 @@ export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
   async updateProfile(userId: number, updateProfileDto: UpdateProfileDto) {
-    const { name, bio } = updateProfileDto;
-    return this.prisma.user.update({
-      where: { id: userId },
-      data: { name, bio },
-      select: { id: true, email: true, username: true, name: true, bio: true },
-    });
-  }
+    console.log('Updating profile for userId:', userId);
+    if (!userId) {
+      throw new BadRequestException('User ID is required');
+    }
 
+    const { name, bio } = updateProfileDto;
+
+    try {
+      return await this.prisma.user.update({
+        where: { id: userId },
+        data: { name, bio },
+        select: {
+          id: true,
+          email: true,
+          username: true,
+          name: true,
+          bio: true,
+        },
+      });
+    } catch (error) {
+      console.error('Prisma error:', error);
+      throw new BadRequestException('Failed to update profile');
+    }
+  }
   async createLink(userId: number, createLinkDto: CreateLinkDto) {
     return this.prisma.link.create({
       data: {
@@ -84,6 +104,7 @@ export class UsersService {
   }
 
   async findOne(userId: number) {
+    console.log('Finding user with ID:', userId);
     return this.prisma.user.findUnique({
       where: { id: userId },
       select: {

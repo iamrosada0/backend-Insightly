@@ -8,7 +8,6 @@ import {
   Param,
   UseGuards,
   Req,
-  Logger,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -38,7 +37,8 @@ export class UsersController {
     @Req() req: RequestWithUser,
     @Body() updateProfileDto: UpdateProfileDto,
   ) {
-    return this.usersService.updateProfile(req.user.sub, updateProfileDto);
+    console.log('Update profile request for user ID:', req.user);
+    return this.usersService.updateProfile(req.user.id, updateProfileDto);
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -50,7 +50,7 @@ export class UsersController {
     @Req() req: RequestWithUser,
     @Body() createLinkDto: CreateLinkDto,
   ) {
-    return this.usersService.createLink(req.user.sub, createLinkDto);
+    return this.usersService.createLink(req.user.id, createLinkDto);
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -59,7 +59,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Get all links for the authenticated user' })
   @ApiResponse({ status: 200, description: 'Links retrieved successfully' })
   async getLinks(@Req() req: RequestWithUser) {
-    return this.usersService.getLinks(req.user.sub);
+    return this.usersService.getLinks(req.user.id);
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -73,7 +73,7 @@ export class UsersController {
     @Body() updateLinkDto: UpdateLinkDto,
   ) {
     return this.usersService.updateLink(
-      req.user.sub,
+      req.user.id,
       parseInt(id, 10),
       updateLinkDto,
     );
@@ -85,7 +85,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Delete a link' })
   @ApiResponse({ status: 200, description: 'Link deleted successfully' })
   async deleteLink(@Req() req: RequestWithUser, @Param('id') id: string) {
-    return this.usersService.deleteLink(req.user.sub, parseInt(id, 10));
+    return this.usersService.deleteLink(req.user.id, parseInt(id, 10));
   }
 
   @Get(':username')
@@ -110,16 +110,13 @@ export class UsersController {
 
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth()
-  @Get('me')
+  @Get('me/profile')
   @ApiOperation({ summary: 'Get authenticated user profile' })
   @ApiResponse({
     status: 200,
     description: 'User profile retrieved successfully',
   })
   async getMyProfile(@Req() req: RequestWithUser) {
-    console.log('Authenticated user ID:', req.user.sub);
-    Logger.log('Rota /me chamada!', 'UsersController');
-    Logger.debug(`JWT payload: ${JSON.stringify(req.user)}`, 'UsersController');
-    return this.usersService.getUserProfileById(req.user.sub);
+    return this.usersService.getUserProfileById(req.user.id);
   }
 }

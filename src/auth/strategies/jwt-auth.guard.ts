@@ -1,4 +1,3 @@
-// insightly-backend/src/auth/jwt-auth.guard.ts
 import {
   Injectable,
   CanActivate,
@@ -9,6 +8,7 @@ import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { RequestWithUser } from 'src/common/interfaces/request-with-user.interface';
+
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   constructor(
@@ -27,16 +27,22 @@ export class JwtAuthGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest<RequestWithUser>();
     const token = request.headers.authorization?.replace('Bearer ', '');
+
     if (!token) {
       throw new UnauthorizedException('No token provided');
     }
 
     try {
       const payload: JwtPayload = this.jwtService.verify(token);
+      // Verificar se o payload tem os campos corretos
+      if (!payload?.id || !payload?.username) {
+        throw new UnauthorizedException('Invalid token structure');
+      }
       request.user = payload;
       return true;
-    } catch {
-      throw new UnauthorizedException('Invalid token');
+    } catch (error) {
+      console.error('JWT verification failed:', error); // Log adicional para ajudar no diagnóstico
+      throw new UnauthorizedException('Invalid or expired token');
     }
   }
 }

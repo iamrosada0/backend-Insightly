@@ -48,7 +48,7 @@ export class FeedbackController {
     const pageNumber = page ? parseInt(page, 10) : 1;
     const limitNumber = limit ? parseInt(limit, 10) : 10;
     return this.feedbackService.getFeedbacks(
-      req.user.sub,
+      req.user.id,
       pageNumber,
       limitNumber,
     );

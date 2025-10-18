@@ -19,7 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
   async validate(payload: JwtPayload) {
     console.log('Validating JWT payload:', payload);
-    const user = await this.usersService.findOne(payload.sub);
+    const user = await this.usersService.findOne(payload.id);
 
     if (!user) {
       throw new UnauthorizedException('User not found or invalid token');
