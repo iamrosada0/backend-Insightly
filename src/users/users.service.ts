@@ -64,12 +64,30 @@ export class UsersService {
         username: true,
         name: true,
         bio: true,
-        links: { orderBy: { createdAt: 'desc' } },
+        links: {
+          orderBy: { createdAt: 'desc' },
+          select: {
+            id: true,
+            title: true,
+            url: true,
+            createdAt: true,
+          },
+        },
+        feedbacks: {
+          orderBy: { createdAt: 'desc' },
+          select: {
+            id: true,
+            text: true,
+            createdAt: true,
+          },
+        },
       },
     });
+
     if (!user) {
       throw new NotFoundException('User not found');
     }
+
     return user;
   }
 

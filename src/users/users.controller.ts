@@ -36,7 +36,6 @@ export class UsersController {
     @Req() req: RequestWithUser,
     @Body() updateProfileDto: UpdateProfileDto,
   ) {
-    console.log(req.user); // <--- teste para ver se tem o id
     return this.usersService.updateProfile(req.user.id, updateProfileDto);
   }
 

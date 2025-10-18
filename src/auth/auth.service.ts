@@ -19,19 +19,16 @@ export class AuthService {
   async register(registerDto: RegisterDto) {
     const { email, username, password } = registerDto;
 
-    // Check if email or username already exists
     const existingUser = await this.prisma.user.findFirst({
       where: { OR: [{ email }, { username }] },
     });
 
     if (existingUser) {
-      throw new ConflictException('Email or username already exists');
+      throw new ConflictException('Email ou nome de usuário já existente');
     }
 
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create the user
     const user = await this.prisma.user.create({
       data: {
         email,
@@ -41,33 +38,37 @@ export class AuthService {
       select: { id: true, email: true, username: true },
     });
 
-    return user;
+    const payload = {
+      sub: user.id,
+      username: user.username,
+      email: user.email,
+    };
+    const accessToken = this.jwtService.sign(payload);
+
+    return {
+      message: 'Usuário registrado com sucesso',
+      accessToken,
+      user,
+    };
   }
 
   async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
 
-    // Find user by email
-    const user = await this.prisma.user.findUnique({
-      where: { email },
-    });
+    const user = await this.prisma.user.findUnique({ where: { email } });
 
-    if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
+    if (!user) throw new UnauthorizedException('Credenciais inválidas');
 
-    // Verify password
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
+    if (!isPasswordValid)
+      throw new UnauthorizedException('Credenciais inválidas');
 
-    // Generate JWT
     const payload = {
       sub: user.id,
-      email: user.email,
       username: user.username,
+      email: user.email,
     };
+
     const accessToken = this.jwtService.sign(payload);
 
     return {

@@ -6,6 +6,7 @@ import {
   Param,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import { FeedbackService } from './feedback.service';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
@@ -16,7 +17,7 @@ import {
   ApiResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import * as requestWithUserInterface from 'src/common/interfaces/request-with-user.interface';
+import type { RequestWithUser } from 'src/common/interfaces/request-with-user.interface';
 
 @ApiTags('feedback')
 @Controller('feedback')
@@ -39,7 +40,17 @@ export class FeedbackController {
   @Get()
   @ApiOperation({ summary: 'Get all feedbacks for the authenticated user' })
   @ApiResponse({ status: 200, description: 'Feedbacks retrieved successfully' })
-  async getFeedbacks(@Req() req: requestWithUserInterface.RequestWithUser) {
-    return this.feedbackService.getFeedbacks(req.user.id);
+  async getFeedbacks(
+    @Req() req: RequestWithUser,
+    @Query('page') page: string,
+    @Query('limit') limit: string,
+  ) {
+    const pageNumber = page ? parseInt(page, 10) : 1;
+    const limitNumber = limit ? parseInt(limit, 10) : 10;
+    return this.feedbackService.getFeedbacks(
+      req.user.id,
+      pageNumber,
+      limitNumber,
+    );
   }
 }

@@ -18,11 +18,13 @@ export class FeedbackService {
       },
     });
   }
-
-  async getFeedbacks(userId: number) {
+  async getFeedbacks(userId: number, page = 1, limit = 10) {
+    const skip = (page - 1) * limit;
     return this.prisma.feedback.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' },
+      skip,
+      take: limit,
     });
   }
 }
