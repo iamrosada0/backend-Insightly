@@ -20,20 +20,20 @@ services:
       retries: 5
 
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: insightly-app
-    restart: always
-    env_file:
-      - .env
-    ports:
-      - "4000:4000"
-    depends_on:
-      db:
-        condition: service_healthy
-    command: >
-      sh -c "npx prisma migrate deploy && node dist/main"
+      build:
+        context: .
+        dockerfile: Dockerfile
+      container_name: insightly-app
+      restart: always
+      env_file:
+        - .env
+      ports:
+        - "4000:4000"
+      depends_on:
+        db:
+          condition: service_healthy
+      command: >
+        sh -c "npx prisma generate && npx prisma migrate deploy && node dist/main"
 
 
 volumes:

@@ -4,6 +4,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
+RUN npx prisma generate       # <-- gera o Prisma Client
 RUN npm run build
 
 # Produção
@@ -16,4 +17,5 @@ COPY prisma ./prisma
 ENV NODE_ENV=production
 ENV PORT=4000
 EXPOSE 4000
-CMD ["node", "dist/main"]
+CMD ["sh", "-c", "npx prisma generate && npx prisma migrate deploy && node dist/main"]
+
