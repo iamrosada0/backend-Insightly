@@ -118,7 +118,7 @@ export class UsersController {
     return this.usersService.getAllUsers();
   }
 
-  @Get('profile/me')
+  @Get('me/profile')
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth()
   @ApiResponse({
