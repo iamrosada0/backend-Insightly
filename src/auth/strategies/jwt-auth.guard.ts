@@ -22,7 +22,7 @@ export class JwtAuthGuard implements CanActivate {
       context.getHandler(),
     );
     if (isPublic) {
-      return true; // Bypass authentication for public endpoints
+      return true;
     }
 
     const request = context.switchToHttp().getRequest<RequestWithUser>();
@@ -34,14 +34,13 @@ export class JwtAuthGuard implements CanActivate {
 
     try {
       const payload: JwtPayload = this.jwtService.verify(token);
-      // Verificar se o payload tem os campos corretos
       if (!payload?.id || !payload?.username) {
         throw new UnauthorizedException('Invalid token structure');
       }
       request.user = payload;
       return true;
     } catch (error) {
-      console.error('JWT verification failed:', error); // Log adicional para ajudar no diagnóstico
+      console.error('JWT verification failed:', error);
       throw new UnauthorizedException('Invalid or expired token');
     }
   }
