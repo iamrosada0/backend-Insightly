@@ -17,7 +17,8 @@ import {
   ApiResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import type { RequestWithUser } from 'src/common/interfaces/request-with-user.interface';
+import * as requestWithUserInterface from '../common/interfaces/request-with-user.interface';
+import { UnauthorizedException } from '@nestjs/common';
 
 @ApiTags('feedback')
 @Controller('feedback')
@@ -41,10 +42,13 @@ export class FeedbackController {
   @ApiOperation({ summary: 'Get all feedbacks for the authenticated user' })
   @ApiResponse({ status: 200, description: 'Feedbacks retrieved successfully' })
   async getFeedbacks(
-    @Req() req: RequestWithUser,
-    @Query('page') page: string,
-    @Query('limit') limit: string,
+    @Req() req: requestWithUserInterface.RequestWithUser,
+    @Query('page') page: string | undefined,
+    @Query('limit') limit: string | undefined,
   ) {
+    if (!req.user) {
+      throw new UnauthorizedException('User not authenticated');
+    }
     const pageNumber = page ? parseInt(page, 10) : 1;
     const limitNumber = limit ? parseInt(limit, 10) : 10;
     return this.feedbackService.getFeedbacks(
