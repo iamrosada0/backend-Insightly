@@ -12,7 +12,10 @@ import { UpdateLinkDto } from './dto/update-link.dto';
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async updateProfile(userId: number, updateProfileDto: UpdateProfileDto) {
+  updateProfile = async (
+    userId: number,
+    updateProfileDto: UpdateProfileDto,
+  ) => {
     console.log('Updating profile for userId:', userId);
     if (!userId) {
       throw new BadRequestException('User ID is required');
@@ -36,8 +39,9 @@ export class UsersService {
       console.error('Prisma error:', error);
       throw new BadRequestException('Failed to update profile');
     }
-  }
-  async createLink(userId: number, createLinkDto: CreateLinkDto) {
+  };
+
+  createLink = async (userId: number, createLinkDto: CreateLinkDto) => {
     return this.prisma.link.create({
       data: {
         title: createLinkDto.title,
@@ -45,20 +49,20 @@ export class UsersService {
         userId,
       },
     });
-  }
+  };
 
-  async getLinks(userId: number) {
+  getLinks = async (userId: number) => {
     return this.prisma.link.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' },
     });
-  }
+  };
 
-  async updateLink(
+  updateLink = async (
     userId: number,
     linkId: number,
     updateLinkDto: UpdateLinkDto,
-  ) {
+  ) => {
     const link = await this.prisma.link.findUnique({ where: { id: linkId } });
     if (!link || link.userId !== userId) {
       throw new NotFoundException('Link not found or not authorized');
@@ -67,17 +71,17 @@ export class UsersService {
       where: { id: linkId },
       data: updateLinkDto,
     });
-  }
+  };
 
-  async deleteLink(userId: number, linkId: number) {
+  deleteLink = async (userId: number, linkId: number) => {
     const link = await this.prisma.link.findUnique({ where: { id: linkId } });
     if (!link || link.userId !== userId) {
       throw new NotFoundException('Link not found or not authorized');
     }
     return this.prisma.link.delete({ where: { id: linkId } });
-  }
+  };
 
-  async getPublicProfile(username: string) {
+  getPublicProfile = async (username: string) => {
     const user = await this.prisma.user.findUnique({
       where: { username },
       select: {
@@ -101,9 +105,9 @@ export class UsersService {
     }
 
     return user;
-  }
+  };
 
-  async findOne(userId: number) {
+  findOne = async (userId: number) => {
     console.log('Finding user with ID:', userId);
     return this.prisma.user.findUnique({
       where: { id: userId },
@@ -115,16 +119,16 @@ export class UsersService {
         bio: true,
       },
     });
-  }
+  };
 
-  async getAllUsers() {
+  getAllUsers = async () => {
     return this.prisma.user.findMany({
       select: { id: true, username: true, name: true },
       orderBy: { name: 'asc' },
     });
-  }
+  };
 
-  async getUserProfileById(userId: number) {
+  getUserProfileById = async (userId: number) => {
     console.log('Fetching profile for userId:', userId);
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -141,5 +145,5 @@ export class UsersService {
       throw new NotFoundException('user não encontrado');
     }
     return user;
-  }
+  };
 }

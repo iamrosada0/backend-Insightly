@@ -12,10 +12,8 @@ import { CreateLinkDto } from './dto/create-link.dto';
 import { UpdateLinkDto } from './dto/update-link.dto';
 import { RequestWithUser } from '../common/interfaces/request-with-user.interface';
 import { ExecutionContext } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { JwtPayload } from 'src/auth/interfaces/jwt-payload.interface';
+import { JwtPayload } from '../auth/interfaces/jwt-payload.interface';
 
-// Define mock types
 interface MockUsersService {
   updateProfile: jest.Mock;
   createLink: jest.Mock;
@@ -27,19 +25,12 @@ interface MockUsersService {
   getUserProfileById: jest.Mock;
 }
 
-// Define Reflector mock type
-interface MockReflector {
-  get: jest.Mock;
-}
-
-// Mock console.log and console.error to avoid cluttering test output
 jest.spyOn(console, 'log').mockImplementation(() => {});
 jest.spyOn(console, 'error').mockImplementation(() => {});
 
 describe('UsersController', () => {
   let controller: UsersController;
   let mockUsersService: MockUsersService;
-  let mockReflector: MockReflector;
 
   beforeEach(async () => {
     mockUsersService = {
@@ -53,51 +44,34 @@ describe('UsersController', () => {
       getUserProfileById: jest.fn(),
     };
 
-    mockReflector = {
-      get: jest.fn(),
-    };
-
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
-      providers: [
-        { provide: UsersService, useValue: mockUsersService },
-        { provide: Reflector, useValue: mockReflector },
-        {
-          provide: AuthGuard('jwt'),
-          useValue: {
-            canActivate: jest
-              .fn()
-              .mockImplementation((context: ExecutionContext) => {
-                const isPublic = mockReflector.get(
-                  'isPublic',
-                  context.getHandler(),
-                );
-                if (isPublic) {
-                  return true;
-                }
+      providers: [{ provide: UsersService, useValue: mockUsersService }],
+    })
+      .overrideGuard(AuthGuard('jwt'))
+      .useValue({
+        canActivate: jest.fn((context: ExecutionContext) => {
+          const handler = context.getHandler().name;
 
-                const request = context
-                  .switchToHttp()
-                  .getRequest<RequestWithUser>();
-                const token = request.headers?.authorization?.replace(
-                  'Bearer ',
-                  '',
-                );
+          if (handler === 'getPublicProfile' || handler === 'getAllUsers') {
+            return true;
+          }
 
-                if (!token) {
-                  throw new UnauthorizedException('No token provided');
-                }
+          const request = context.switchToHttp().getRequest<RequestWithUser>();
+          const token = request.headers?.authorization?.replace('Bearer ', '');
 
-                if (request.user) {
-                  return true;
-                }
+          if (!token) {
+            throw new UnauthorizedException('User not authenticated');
+          }
 
-                throw new UnauthorizedException('Invalid or expired token');
-              }),
-          },
-        },
-      ],
-    }).compile();
+          if (!request.user) {
+            throw new UnauthorizedException('User not authenticated');
+          }
+
+          return true;
+        }),
+      })
+      .compile();
 
     controller = module.get<UsersController>(UsersController);
   });
@@ -146,10 +120,6 @@ describe('UsersController', () => {
         userId,
         updateProfileDto,
       );
-      expect(mockReflector.get).toHaveBeenCalledWith(
-        'isPublic',
-        expect.any(Function),
-      );
     });
 
     it('should throw UnauthorizedException if no token is provided', async () => {
@@ -164,7 +134,7 @@ describe('UsersController', () => {
 
       await expect(
         controller.updateProfile(unauthorizedRequest, updateProfileDto),
-      ).rejects.toThrow(new UnauthorizedException('No token provided'));
+      ).rejects.toThrow(new UnauthorizedException('User not authenticated'));
       expect(mockUsersService.updateProfile).not.toHaveBeenCalled();
     });
 
@@ -180,7 +150,7 @@ describe('UsersController', () => {
 
       await expect(
         controller.updateProfile(unauthorizedRequest, updateProfileDto),
-      ).rejects.toThrow(new UnauthorizedException('Invalid or expired token'));
+      ).rejects.toThrow(new UnauthorizedException('User not authenticated'));
       expect(mockUsersService.updateProfile).not.toHaveBeenCalled();
     });
 
@@ -249,10 +219,6 @@ describe('UsersController', () => {
         userId,
         createLinkDto,
       );
-      expect(mockReflector.get).toHaveBeenCalledWith(
-        'isPublic',
-        expect.any(Function),
-      );
     });
 
     it('should throw UnauthorizedException if no token is provided', async () => {
@@ -267,7 +233,7 @@ describe('UsersController', () => {
 
       await expect(
         controller.createLink(unauthorizedRequest, createLinkDto),
-      ).rejects.toThrow(new UnauthorizedException('No token provided'));
+      ).rejects.toThrow(new UnauthorizedException('User not authenticated'));
       expect(mockUsersService.createLink).not.toHaveBeenCalled();
     });
 
@@ -283,7 +249,7 @@ describe('UsersController', () => {
 
       await expect(
         controller.createLink(unauthorizedRequest, createLinkDto),
-      ).rejects.toThrow(new UnauthorizedException('Invalid or expired token'));
+      ).rejects.toThrow(new UnauthorizedException('User not authenticated'));
       expect(mockUsersService.createLink).not.toHaveBeenCalled();
     });
 
@@ -338,10 +304,6 @@ describe('UsersController', () => {
 
       expect(result).toEqual(links);
       expect(mockUsersService.getLinks).toHaveBeenCalledWith(userId);
-      expect(mockReflector.get).toHaveBeenCalledWith(
-        'isPublic',
-        expect.any(Function),
-      );
     });
 
     it('should throw UnauthorizedException if no token is provided', async () => {
@@ -355,7 +317,7 @@ describe('UsersController', () => {
       } as unknown as RequestWithUser;
 
       await expect(controller.getLinks(unauthorizedRequest)).rejects.toThrow(
-        new UnauthorizedException('No token provided'),
+        new UnauthorizedException('User not authenticated'),
       );
       expect(mockUsersService.getLinks).not.toHaveBeenCalled();
     });
@@ -371,7 +333,7 @@ describe('UsersController', () => {
       } as unknown as RequestWithUser;
 
       await expect(controller.getLinks(unauthorizedRequest)).rejects.toThrow(
-        new UnauthorizedException('Invalid or expired token'),
+        new UnauthorizedException('User not authenticated'),
       );
       expect(mockUsersService.getLinks).not.toHaveBeenCalled();
     });
@@ -380,9 +342,13 @@ describe('UsersController', () => {
   describe('updateLink', () => {
     const userId = 1;
     const linkId = '1';
-
+    const jwtPayload: JwtPayload = {
+      id: userId,
+      username: 'testuser',
+      email: 'test@example.com',
+    };
     const mockRequest: RequestWithUser = {
-      user: null,
+      user: jwtPayload,
       headers: { authorization: 'Bearer valid-token' },
       body: {},
       params: {},
@@ -416,10 +382,6 @@ describe('UsersController', () => {
         parseInt(linkId, 10),
         updateLinkDto,
       );
-      expect(mockReflector.get).toHaveBeenCalledWith(
-        'isPublic',
-        expect.any(Function),
-      );
     });
 
     it('should throw UnauthorizedException if no token is provided', async () => {
@@ -434,7 +396,7 @@ describe('UsersController', () => {
 
       await expect(
         controller.updateLink(unauthorizedRequest, linkId, updateLinkDto),
-      ).rejects.toThrow(new UnauthorizedException('No token provided'));
+      ).rejects.toThrow(new UnauthorizedException('User not authenticated'));
       expect(mockUsersService.updateLink).not.toHaveBeenCalled();
     });
 
@@ -450,7 +412,7 @@ describe('UsersController', () => {
 
       await expect(
         controller.updateLink(unauthorizedRequest, linkId, updateLinkDto),
-      ).rejects.toThrow(new UnauthorizedException('Invalid or expired token'));
+      ).rejects.toThrow(new UnauthorizedException('User not authenticated'));
       expect(mockUsersService.updateLink).not.toHaveBeenCalled();
     });
 
@@ -473,21 +435,21 @@ describe('UsersController', () => {
       const invalidId = 'abc';
       await expect(
         controller.updateLink(mockRequest, invalidId, updateLinkDto),
-      ).rejects.toThrow(BadRequestException); // Assumes controller validates ID
-      expect(mockUsersService.updateLink).toHaveBeenCalledWith(
-        userId,
-        NaN,
-        updateLinkDto,
-      );
+      ).rejects.toThrow(BadRequestException);
+      expect(mockUsersService.updateLink).not.toHaveBeenCalled();
     });
   });
 
   describe('deleteLink', () => {
     const userId = 1;
     const linkId = '1';
-
+    const jwtPayload: JwtPayload = {
+      id: userId,
+      username: 'testuser',
+      email: 'test@example.com',
+    };
     const mockRequest: RequestWithUser = {
-      user: null,
+      user: jwtPayload,
       headers: { authorization: 'Bearer valid-token' },
       body: {},
       params: {},
@@ -512,10 +474,6 @@ describe('UsersController', () => {
         userId,
         parseInt(linkId, 10),
       );
-      expect(mockReflector.get).toHaveBeenCalledWith(
-        'isPublic',
-        expect.any(Function),
-      );
     });
 
     it('should throw UnauthorizedException if no token is provided', async () => {
@@ -530,7 +488,7 @@ describe('UsersController', () => {
 
       await expect(
         controller.deleteLink(unauthorizedRequest, linkId),
-      ).rejects.toThrow(new UnauthorizedException('No token provided'));
+      ).rejects.toThrow(new UnauthorizedException('User not authenticated'));
       expect(mockUsersService.deleteLink).not.toHaveBeenCalled();
     });
 
@@ -546,7 +504,7 @@ describe('UsersController', () => {
 
       await expect(
         controller.deleteLink(unauthorizedRequest, linkId),
-      ).rejects.toThrow(new UnauthorizedException('Invalid or expired token'));
+      ).rejects.toThrow(new UnauthorizedException('User not authenticated'));
       expect(mockUsersService.deleteLink).not.toHaveBeenCalled();
     });
 
@@ -568,8 +526,8 @@ describe('UsersController', () => {
       const invalidId = 'abc';
       await expect(
         controller.deleteLink(mockRequest, invalidId),
-      ).rejects.toThrow(BadRequestException); // Assumes controller validates ID
-      expect(mockUsersService.deleteLink).toHaveBeenCalledWith(userId, NaN);
+      ).rejects.toThrow(BadRequestException);
+      expect(mockUsersService.deleteLink).not.toHaveBeenCalled();
     });
   });
 
@@ -590,31 +548,21 @@ describe('UsersController', () => {
     };
 
     it('should return public profile for a username', async () => {
-      mockReflector.get.mockReturnValue(true); // Simulate @Public() decorator
       mockUsersService.getPublicProfile.mockResolvedValue(publicProfile);
 
       const result = await controller.getPublicProfile(username);
 
       expect(result).toEqual(publicProfile);
-      expect(mockReflector.get).toHaveBeenCalledWith(
-        'isPublic',
-        expect.any(Function),
-      );
       expect(mockUsersService.getPublicProfile).toHaveBeenCalledWith(username);
     });
 
     it('should propagate NotFoundException from service', async () => {
-      mockReflector.get.mockReturnValue(true); // Simulate @Public() decorator
       mockUsersService.getPublicProfile.mockRejectedValue(
         new NotFoundException('User not found'),
       );
 
       await expect(controller.getPublicProfile(username)).rejects.toThrow(
         NotFoundException,
-      );
-      expect(mockReflector.get).toHaveBeenCalledWith(
-        'isPublic',
-        expect.any(Function),
       );
       expect(mockUsersService.getPublicProfile).toHaveBeenCalledWith(username);
     });
@@ -627,16 +575,11 @@ describe('UsersController', () => {
     ];
 
     it('should return all users', async () => {
-      mockReflector.get.mockReturnValue(true); // Simulate @Public() decorator
       mockUsersService.getAllUsers.mockResolvedValue(users);
 
       const result = await controller.getAllUsers();
 
       expect(result).toEqual(users);
-      expect(mockReflector.get).toHaveBeenCalledWith(
-        'isPublic',
-        expect.any(Function),
-      );
       expect(mockUsersService.getAllUsers).toHaveBeenCalled();
     });
   });
@@ -677,10 +620,6 @@ describe('UsersController', () => {
 
       expect(result).toEqual(userProfile);
       expect(mockUsersService.getUserProfileById).toHaveBeenCalledWith(userId);
-      expect(mockReflector.get).toHaveBeenCalledWith(
-        'isPublic',
-        expect.any(Function),
-      );
     });
 
     it('should throw UnauthorizedException if no token is provided', async () => {
@@ -695,7 +634,7 @@ describe('UsersController', () => {
 
       await expect(
         controller.getMyProfile(unauthorizedRequest),
-      ).rejects.toThrow(new UnauthorizedException('No token provided'));
+      ).rejects.toThrow(new UnauthorizedException('User not authenticated'));
       expect(mockUsersService.getUserProfileById).not.toHaveBeenCalled();
     });
 
@@ -711,7 +650,7 @@ describe('UsersController', () => {
 
       await expect(
         controller.getMyProfile(unauthorizedRequest),
-      ).rejects.toThrow(new UnauthorizedException('Invalid or expired token'));
+      ).rejects.toThrow(new UnauthorizedException('User not authenticated'));
       expect(mockUsersService.getUserProfileById).not.toHaveBeenCalled();
     });
 
