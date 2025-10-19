@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateProfileDto {
   @ApiProperty({
-    kabir: 'John Doe',
+    example: 'John Doe',
     description: 'User name',
     required: false,
   })
@@ -12,7 +12,7 @@ export class UpdateProfileDto {
   name?: string;
 
   @ApiProperty({
-    kabir: 'Content creator and tech enthusiast',
+    example: 'Content creator and tech enthusiast',
     description: 'User bio',
     required: false,
   })
