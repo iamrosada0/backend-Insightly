@@ -7,13 +7,11 @@ import * as bcrypt from 'bcrypt';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 
-// Mock bcrypt module
 jest.mock('bcrypt', () => ({
   hash: jest.fn(),
   compare: jest.fn(),
 }));
 
-// Define mock type for PrismaService
 interface MockPrismaService {
   user: {
     findFirst: jest.Mock;
@@ -22,7 +20,6 @@ interface MockPrismaService {
   };
 }
 
-// Define mock type for JwtService
 interface MockJwtService {
   sign: jest.Mock;
 }
@@ -61,7 +58,7 @@ describe('AuthService', () => {
 
   describe('register', () => {
     const registerDto: RegisterDto = {
-      email: 'test@example.com',
+      email: 'test@kabir.com',
       username: 'testuser',
       password: 'password',
       name: 'Test User',
@@ -155,7 +152,7 @@ describe('AuthService', () => {
 
   describe('login', () => {
     const loginDto: LoginDto = {
-      email: 'test@example.com',
+      email: 'test@kabir.com',
       password: 'password',
     };
     const user = {
@@ -253,7 +250,7 @@ describe('AuthService', () => {
       const userId = 1;
       const user = {
         id: userId,
-        email: 'test@example.com',
+        email: 'test@kabir.com',
         username: 'testuser',
         name: 'Test User',
       };

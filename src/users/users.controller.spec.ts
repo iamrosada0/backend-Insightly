@@ -85,7 +85,7 @@ describe('UsersController', () => {
     const jwtPayload: JwtPayload = {
       id: userId,
       username: 'testuser',
-      email: 'test@example.com',
+      email: 'test@kabir.com',
     };
     const mockRequest: RequestWithUser = {
       user: jwtPayload,
@@ -101,7 +101,7 @@ describe('UsersController', () => {
     };
     const updatedUser = {
       id: userId,
-      email: 'test@example.com',
+      email: 'test@kabir.com',
       username: 'testuser',
       name: updateProfileDto.name,
       bio: updateProfileDto.bio,
@@ -187,7 +187,7 @@ describe('UsersController', () => {
     const jwtPayload: JwtPayload = {
       id: userId,
       username: 'testuser',
-      email: 'test@example.com',
+      email: 'test@kabir.com',
     };
     const mockRequest: RequestWithUser = {
       user: jwtPayload,
@@ -199,7 +199,7 @@ describe('UsersController', () => {
     } as unknown as RequestWithUser;
     const createLinkDto: CreateLinkDto = {
       title: 'My Link',
-      url: 'https://example.com',
+      url: 'https://kabir.com',
     };
     const createdLink = {
       id: 1,
@@ -277,7 +277,7 @@ describe('UsersController', () => {
     const jwtPayload: JwtPayload = {
       id: userId,
       username: 'testuser',
-      email: 'test@example.com',
+      email: 'test@kabir.com',
     };
     const mockRequest: RequestWithUser = {
       user: jwtPayload,
@@ -291,7 +291,7 @@ describe('UsersController', () => {
       {
         id: 1,
         title: 'Link 1',
-        url: 'https://example.com/1',
+        url: 'https://kabir.com/1',
         userId,
         createdAt: new Date(),
       },
@@ -345,7 +345,7 @@ describe('UsersController', () => {
     const jwtPayload: JwtPayload = {
       id: userId,
       username: 'testuser',
-      email: 'test@example.com',
+      email: 'test@kabir.com',
     };
     const mockRequest: RequestWithUser = {
       user: jwtPayload,
@@ -446,7 +446,7 @@ describe('UsersController', () => {
     const jwtPayload: JwtPayload = {
       id: userId,
       username: 'testuser',
-      email: 'test@example.com',
+      email: 'test@kabir.com',
     };
     const mockRequest: RequestWithUser = {
       user: jwtPayload,
@@ -459,7 +459,7 @@ describe('UsersController', () => {
     const deletedLink = {
       id: parseInt(linkId, 10),
       title: 'Link',
-      url: 'https://example.com',
+      url: 'https://kabir.com',
       userId,
       createdAt: new Date(),
     };
@@ -541,7 +541,7 @@ describe('UsersController', () => {
         {
           id: 1,
           title: 'Link 1',
-          url: 'https://example.com/1',
+          url: 'https://kabir.com/1',
           createdAt: new Date(),
         },
       ],
@@ -589,7 +589,7 @@ describe('UsersController', () => {
     const jwtPayload: JwtPayload = {
       id: userId,
       username: 'testuser',
-      email: 'test@example.com',
+      email: 'test@kabir.com',
     };
     const mockRequest: RequestWithUser = {
       user: jwtPayload,
@@ -607,7 +607,7 @@ describe('UsersController', () => {
         {
           id: 1,
           title: 'Link 1',
-          url: 'https://example.com/1',
+          url: 'https://kabir.com/1',
           createdAt: new Date(),
         },
       ],

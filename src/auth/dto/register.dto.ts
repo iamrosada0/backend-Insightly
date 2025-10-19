@@ -23,7 +23,7 @@ export class RegisterDto {
   })
   username: string;
 
-  @ApiProperty({ example: 'user@example.com', description: 'User email' })
+  @ApiProperty({ example: 'user@kabir.com', description: 'User email' })
   @IsEmail({}, { message: 'Email inválido' })
   email: string;
 

@@ -1,4 +1,3 @@
-// src/auth/auth.controller.spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -36,7 +35,7 @@ describe('AuthController', () => {
     const registerDto: RegisterDto = {
       name: 'João Silva',
       username: 'joao_silva',
-      email: 'joao@example.com',
+      email: 'joao@kabir.com',
       password: 'password123',
     };
 
@@ -70,7 +69,7 @@ describe('AuthController', () => {
     });
 
     it('should handle invalid RegisterDto and throw validation error', async () => {
-      const invalidDto = { ...registerDto, email: 'invalid-email' }; // Invalid email
+      const invalidDto = { ...registerDto, email: 'invalid-email' };
       mockAuthService.register.mockRejectedValue(
         new ConflictException('Validation failed'),
       );
@@ -84,7 +83,7 @@ describe('AuthController', () => {
 
   describe('POST /auth/login', () => {
     const loginDto: LoginDto = {
-      email: 'joao@example.com',
+      email: 'joao@kabir.com',
       password: 'password123',
     };
 
@@ -121,7 +120,7 @@ describe('AuthController', () => {
     });
 
     it('should handle invalid LoginDto and throw validation error', async () => {
-      const invalidDto = { ...loginDto, email: 'invalid-email' }; // Invalid email
+      const invalidDto = { ...loginDto, email: 'invalid-email' };
       mockAuthService.login.mockRejectedValue(
         new UnauthorizedException('Validation failed'),
       );

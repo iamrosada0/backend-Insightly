@@ -20,7 +20,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
-    .setTitle('API Example')
+    .setTitle('API kabir')
     .setDescription('Documentação da API')
     .setVersion('1.0')
     .addBearerAuth()

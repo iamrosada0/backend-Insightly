@@ -142,7 +142,7 @@ describe('FeedbackController', () => {
     const userId = 1;
     const jwtPayload: JwtPayload = {
       id: userId,
-      email: 'joao@example.com',
+      email: 'joao@kabir.com',
       username: 'joao_silva',
     };
     const mockRequest: RequestWithUser = {

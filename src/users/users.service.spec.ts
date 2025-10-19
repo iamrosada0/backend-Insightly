@@ -66,7 +66,7 @@ describe('UsersService', () => {
     };
     const updatedUser = {
       id: userId,
-      email: 'test@example.com',
+      email: 'test@kabir.com',
       username: 'testuser',
       name: updateProfileDto.name,
       bio: updateProfileDto.bio,
@@ -124,7 +124,7 @@ describe('UsersService', () => {
     const userId = 1;
     const createLinkDto: CreateLinkDto = {
       title: 'My Link',
-      url: 'https://example.com',
+      url: 'https://kabir.com',
     };
     const createdLink = {
       id: 1,
@@ -156,14 +156,14 @@ describe('UsersService', () => {
       {
         id: 1,
         title: 'Link 1',
-        url: 'https://example.com/1',
+        url: 'https://kabir.com/1',
         userId,
         createdAt: new Date(),
       },
       {
         id: 2,
         title: 'Link 2',
-        url: 'https://example.com/2',
+        url: 'https://kabir.com/2',
         userId,
         createdAt: new Date(),
       },
@@ -249,7 +249,7 @@ describe('UsersService', () => {
     const link = {
       id: linkId,
       title: 'Link',
-      url: 'https://example.com',
+      url: 'https://kabir.com',
       userId,
     };
 
@@ -304,7 +304,7 @@ describe('UsersService', () => {
         {
           id: 1,
           title: 'Link 1',
-          url: 'https://example.com/1',
+          url: 'https://kabir.com/1',
           createdAt: new Date(),
         },
       ],
@@ -355,7 +355,7 @@ describe('UsersService', () => {
     const userId = 1;
     const user = {
       id: userId,
-      email: 'test@example.com',
+      email: 'test@kabir.com',
       username: 'testuser',
       name: 'Test User',
       bio: 'Test Bio',
@@ -427,7 +427,7 @@ describe('UsersService', () => {
         {
           id: 1,
           title: 'Link 1',
-          url: 'https://example.com/1',
+          url: 'https://kabir.com/1',
           createdAt: new Date(),
         },
       ],

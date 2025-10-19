@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateFeedbackDto {
   @ApiProperty({
-    example: 'Great content, keep it up!',
+    kabir: 'Great content, keep it up!',
     description: 'Feedback message',
   })
   @IsString()

@@ -12,7 +12,7 @@ export class UpdateLinkDto {
   title?: string;
 
   @ApiProperty({
-    example: 'https://twitter.com/johndoe',
+    example: 'https://twitter.com/rosada',
     description: 'Link URL',
     required: false,
   })
