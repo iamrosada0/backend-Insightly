@@ -6,7 +6,6 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 import { CreateLinkDto } from './dto/create-link.dto';
 import { UpdateLinkDto } from './dto/update-link.dto';
 
-// Define mock type for PrismaService
 interface MockPrismaService {
   user: {
     update: jest.Mock;
@@ -22,7 +21,6 @@ interface MockPrismaService {
   };
 }
 
-// Mock console.log and console.error to avoid cluttering test output
 jest.spyOn(console, 'log').mockImplementation(() => {});
 jest.spyOn(console, 'error').mockImplementation(() => {});
 

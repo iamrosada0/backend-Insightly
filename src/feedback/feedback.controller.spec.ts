@@ -12,7 +12,6 @@ import { RequestWithUser } from '../common/interfaces/request-with-user.interfac
 import { ExecutionContext } from '@nestjs/common';
 import { JwtPayload } from '../auth/interfaces/jwt-payload.interface';
 
-// Define the expected response structure for getFeedbacks
 type FeedbackResponse = Array<{
   id: number;
   text: string;
@@ -20,13 +19,11 @@ type FeedbackResponse = Array<{
   createdAt: Date;
 }>;
 
-// Define mock types
 interface MockFeedbackService {
   createFeedback: jest.Mock<Promise<unknown>, [string, CreateFeedbackDto]>;
   getFeedbacks: jest.Mock<Promise<FeedbackResponse>, [number, number, number]>;
 }
 
-// Mock console.log and console.error to avoid cluttering test output
 jest.spyOn(console, 'log').mockImplementation(() => {});
 jest.spyOn(console, 'error').mockImplementation(() => {});
 
@@ -54,7 +51,6 @@ describe('FeedbackController', () => {
       .useValue({
         canActivate: jest.fn((context: ExecutionContext) => {
           const handler = context.getHandler().name;
-          // Simulate public endpoint (createFeedback is not protected)
           if (handler === 'createFeedback') {
             return true;
           }
