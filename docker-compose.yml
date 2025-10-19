@@ -35,6 +35,7 @@ services:
     command: >
       sh -c "npx prisma migrate deploy && node dist/main"
 
+
 volumes:
   db-data:
 
