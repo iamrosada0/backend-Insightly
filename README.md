@@ -388,29 +388,40 @@ O diagrama abaixo mostra o fluxo principal da aplicação:
 
 ---
 
-## 🐳 Rodando a aplicação localmente com Docker Compose
 
-Para simplificar testes e desenvolvimento, vamos usar **localhost** em vez do ALB da AWS.
+## Rodando Backend e Banco de Dados com Docker Compose
 
-### 1️⃣ Criar o Docker Compose na raiz
+Para rodar a aplicação localmente usando Docker, com apenas o backend e o banco de dados PostgreSQL, siga os passos:
 
-1. Copie o arquivo `docker-compose.yml` que está dentro do backend (`backend-Insightly/docker-compose.yml`) para a raiz do projeto (mesmo nível do `backend-Insightly` e `insightly-frontend`).
+1. Certifique-se de estar na pasta onde o arquivo `docker-compose.yml` está salvo (ex: raiz do projeto).
 
-2. Ajuste a URL da API no frontend para apontar para `localhost`:
-
-```yaml
-services:
-  frontend:
-    environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:4000/api
-```
-
-### 2️⃣ Rodar os containers
-
-No terminal, dentro da raiz do projeto:
+2. No terminal, execute o comando para subir os containers:
 
 ```bash
 docker-compose up --build
+```
+
+3. Aguarde até que o PostgreSQL e o backend estejam rodando.
+
+4. A API do backend ficará disponível em:
+
+```
+http://localhost:4000/api
+```
+
+5. Para parar e remover os containers, use:
+
+```bash
+docker-compose down
+```
+
+---
+
+**Importante:**
+No backend, a conexão com o banco usa o hostname `db` (nome do serviço do banco no Docker Compose). Não altere o `DATABASE_URL` para `localhost` quando estiver rodando via Docker Compose.
+
+---
+
 ```
 
 Isso vai iniciar:
@@ -419,18 +430,13 @@ Isso vai iniciar:
 * **Backend NestJS**: porta `4000`
 * **Frontend NextJS**: porta `3000`
 
-### 3️⃣ Acessar a aplicação
-
-* Frontend: [http://localhost:3000](http://localhost:3000)
-* Backend API: [http://localhost:4000/api](http://localhost:4000/api)
-* Banco de dados: localhost:5432 (usuário: `postgres`, senha: `postgres`)
 
 > Observação: Prisma vai gerar o client e aplicar migrações automaticamente quando o backend subir.
 
 ---
 
 
-Claro! Aqui está um **modelo de seção `.env` para o backend** pronto para você copiar e colar no seu `README.md` (ou diretamente como um snippet em Markdown). Inclui as variáveis básicas que você mencionou, com espaço para adicionar outras futuras:
+
 
 ---
 
