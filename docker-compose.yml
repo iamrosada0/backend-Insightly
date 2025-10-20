@@ -36,18 +36,6 @@ services:
     volumes:
       - ./backend-Insightly/prisma:/app/prisma
 
-  frontend:
-    build:
-      context: ./insightly-frontend
-      dockerfile: Dockerfile
-    container_name: insightly-frontend
-    restart: always
-    ports:
-      - "3000:3000"
-    environment:
-      - NEXT_PUBLIC_API_URL=http://insightly-alb-570198500.eu-west-2.elb.amazonaws.com/api
-    depends_on:
-      - backend
-
 volumes:
   db-data:
+
