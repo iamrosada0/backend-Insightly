@@ -448,6 +448,8 @@ PORT=4000
 # Ambiente de execução (development, production, test)
 NODE_ENV=development
 
+JWT_SECRET=MGs9sN82d@kL93nZ!2vBnKmW03bVc7xq
+
 ```
 
 
