@@ -430,6 +430,29 @@ Isso vai iniciar:
 ---
 
 
+Claro! Aqui está um **modelo de seção `.env` para o backend** pronto para você copiar e colar no seu `README.md` (ou diretamente como um snippet em Markdown). Inclui as variáveis básicas que você mencionou, com espaço para adicionar outras futuras:
+
+---
+
+### 📦 Arquivo `.env` do Backend (NestJS)
+
+Crie um arquivo chamado `.env` dentro da pasta `backend-Insightly` com o seguinte conteúdo:
+
+```env
+# URL de conexão com o banco PostgreSQL (host = nome do serviço no Docker)
+DATABASE_URL=postgresql://postgres:postgres@db:5432/insightly
+
+# Porta em que o backend será executado
+PORT=4000
+
+# Ambiente de execução (development, production, test)
+NODE_ENV=development
+
+```
+
+
+---
+
 
 ---
 
