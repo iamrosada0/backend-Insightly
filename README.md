@@ -437,23 +437,17 @@ Isso vai iniciar:
 
 
 ---
-```
+
 ### 📦 Arquivo `.env` do Backend (NestJS)
 
 Crie um arquivo chamado `.env` dentro da pasta `backend-Insightly` com o seguinte conteúdo:
 
-```env
-# URL de conexão com o banco PostgreSQL (host = nome do serviço no Docker)
+```
 DATABASE_URL=postgresql://postgres:postgres@db:5432/insightly?schema=public
-
-# Porta em que o backend será executado
 PORT=4000
-
-# Ambiente de execução (development, production, test)
 NODE_ENV=development
 
 JWT_SECRET=MGs9sN82d@kL93nZ!2vBnKmW03bVc7xq
-
 ```
 
 ### Estrutura de pastas (Frontend)
