@@ -1,4 +1,3 @@
-# Build
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
@@ -7,7 +6,6 @@ COPY . .
 RUN npx prisma generate       # <-- gera o Prisma Client
 RUN npm run build
 
-# Produção
 FROM node:20-alpine
 WORKDIR /app
 COPY package*.json ./
