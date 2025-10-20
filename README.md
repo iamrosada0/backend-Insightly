@@ -463,6 +463,9 @@ Isso vai iniciar:
 
 * Backend: [https://github.com/iamrosada0/backend-Insightly](https://github.com/iamrosada0/backend-Insightly)
 * Frontend: [https://github.com/iamrosada0/frontend-Insightly](https://github.com/iamrosada0/frontend-Insightly)
+> ⚡ **Swagger:** Depois que o backend subir, você pode acessar a documentação da API via Swagger em:
+> [http://localhost:4000/docs#/users/UsersController_getPublicProfile](http://localhost:4000/docs#/users/UsersController_getPublicProfile)
 
+> Observação: Prisma vai gerar o client e aplicar migrações automaticamente quando o backend subir.
 ---
 
