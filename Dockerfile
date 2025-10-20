@@ -3,17 +3,18 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN npx prisma generate      
+RUN npx prisma generate
 RUN npm run build
 
 FROM node:20-alpine
 WORKDIR /app
 COPY package*.json ./
-RUN npm install --production
-COPY --from=builder /app/dist ./dist
-COPY prisma ./prisma
-ENV NODE_ENV=production
+RUN npm install
+COPY --from=builder /app ./
+ENV NODE_ENV=development
 ENV PORT=4000
 EXPOSE 4000
-CMD ["sh", "-c", "npx prisma generate && npx prisma migrate deploy && node dist/main"]
+
+# Usar o comando para rodar o servidor em modo dev, com watch (ajuste conforme seu script)
+CMD ["npm", "run", "start:dev"]
 
