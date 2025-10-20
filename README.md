@@ -440,7 +440,7 @@ Crie um arquivo chamado `.env` dentro da pasta `backend-Insightly` com o seguint
 
 ```env
 # URL de conexão com o banco PostgreSQL (host = nome do serviço no Docker)
-DATABASE_URL=postgresql://postgres:postgres@db:5432/insightly
+DATABASE_URL=postgresql://postgres:postgres@db:5432/insightly?schema=public
 
 # Porta em que o backend será executado
 PORT=4000
