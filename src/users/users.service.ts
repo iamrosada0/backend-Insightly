@@ -16,7 +16,6 @@ export class UsersService {
     userId: number,
     updateProfileDto: UpdateProfileDto,
   ) => {
-    console.log('Updating profile for userId:', userId);
     if (!userId) {
       throw new BadRequestException('User ID is required');
     }
@@ -108,7 +107,6 @@ export class UsersService {
   };
 
   findOne = async (userId: number) => {
-    console.log('Finding user with ID:', userId);
     return this.prisma.user.findUnique({
       where: { id: userId },
       select: {
@@ -129,7 +127,6 @@ export class UsersService {
   };
 
   getUserProfileById = async (userId: number) => {
-    console.log('Fetching profile for userId:', userId);
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       select: {

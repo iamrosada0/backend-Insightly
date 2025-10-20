@@ -35,7 +35,6 @@ export class UsersController {
     if (!req.user) {
       throw new UnauthorizedException('User not authenticated');
     }
-    console.log('Update profile request for user ID:', req.user);
     return this.usersService.updateProfile(req.user.id, updateProfileDto);
   }
 
