@@ -422,8 +422,6 @@ No backend, a conexão com o banco usa o hostname `db` (nome do serviço do banc
 
 ---
 
-```
-
 Isso vai iniciar:
 
 * **PostgreSQL**: porta `5432`
@@ -439,7 +437,7 @@ Isso vai iniciar:
 
 
 ---
-
+```
 ### 📦 Arquivo `.env` do Backend (NestJS)
 
 Crie um arquivo chamado `.env` dentro da pasta `backend-Insightly` com o seguinte conteúdo:
@@ -457,12 +455,6 @@ NODE_ENV=development
 JWT_SECRET=MGs9sN82d@kL93nZ!2vBnKmW03bVc7xq
 
 ```
-
-
----
-
-
----
 
 ### Estrutura de pastas (Frontend)
 
