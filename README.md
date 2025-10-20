@@ -324,3 +324,145 @@ Exemplo de requisição de feedback:
 ---
 # Test
 ![alt text](image-3.png)
+
+
+Perfeito! Aqui está uma versão atualizada e completa do seu README, já incluindo a seção de **rodar localmente com Docker Compose** integrada com toda a documentação, arquitetura e explicações de fluxo:
+
+---
+
+# README - MVP Plataforma "Insightly"
+
+## 🏢 Contexto do Projeto
+
+**Insightly** é uma startup fictícia que permite criadores de conteúdo:
+
+* Criar uma página pública com links das suas redes sociais.
+* Receber feedback anônimo de seus seguidores.
+
+O MVP foi desenvolvido com foco em **simplicidade, escalabilidade e SEO**, contemplando três pilares principais: autenticação, página pública e feedback.
+
+---
+
+## 📝 Objetivo do Exercício
+
+O desafio consistiu em construir do zero um **MVP funcional**, tomando decisões de arquitetura, implementando funcionalidades core e preparando a infraestrutura para deploy.
+
+---
+
+## 🛠 Tecnologias Utilizadas
+
+| Camada         | Tecnologia                | Justificativa                                                       |
+| -------------- | ------------------------- | ------------------------------------------------------------------- |
+| Backend        | NestJS + TypeScript       | Estrutura modular, suporte a REST e fácil testabilidade             |
+| Frontend       | NextJS + TypeScript (SSR) | SSR/SSG nativo para SEO, integração simples com API                 |
+| Banco de Dados | PostgreSQL                | Relacional, confiável, escalável                                    |
+| Infraestrutura | AWS (EC2, ALB)            | Deploy rápido, balanceamento de carga, monitoramento via CloudWatch |
+| Segurança      | HTTPS via ACM + Nginx     | Criptografia TLS, segurança do tráfego                              |
+| Testes         | Jest (unitários NestJS)   | Garantia de qualidade e cobertura das principais funcionalidades    |
+
+---
+
+## ⚙️ Arquitetura do MVP
+
+O diagrama abaixo mostra o fluxo principal da aplicação:
+
+![alt text](image.png)
+
+
+**Fluxo de deploy:**
+
+1. Instalar dependências no backend e frontend.
+2. Rodar backend NestJS (`npm run start:dev`).
+3. Rodar frontend Next.js SSR (`npm run dev`).
+4. Configurar ALB para rotear `/api` para porta 4000 do backend.
+
+---
+
+## 💡 Decisões Estratégicas
+
+1. **SSR para SEO**: essencial para páginas públicas de criadores.
+2. **Separação de frontend/backend**: permite escalabilidade e testes independentes.
+3. **AWS EC2 + ALB**: simples, confiável e permite escalabilidade futura.
+4. **PostgreSQL relacional**: garante integridade entre usuários, links e feedbacks.
+5. **Testes unitários com Jest**: valida funcionalidades críticas do backend.
+
+---
+
+## 🐳 Rodando a aplicação localmente com Docker Compose
+
+Para simplificar testes e desenvolvimento, vamos usar **localhost** em vez do ALB da AWS.
+
+### 1️⃣ Criar o Docker Compose na raiz
+
+1. Copie o arquivo `docker-compose.yml` que está dentro do backend (`backend-Insightly/docker-compose.yml`) para a raiz do projeto (mesmo nível do `backend-Insightly` e `insightly-frontend`).
+
+2. Ajuste a URL da API no frontend para apontar para `localhost`:
+
+```yaml
+services:
+  frontend:
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:4000/api
+```
+
+### 2️⃣ Rodar os containers
+
+No terminal, dentro da raiz do projeto:
+
+```bash
+docker-compose up --build
+```
+
+Isso vai iniciar:
+
+* **PostgreSQL**: porta `5432`
+* **Backend NestJS**: porta `4000`
+* **Frontend NextJS**: porta `3000`
+
+### 3️⃣ Acessar a aplicação
+
+* Frontend: [http://localhost:3000](http://localhost:3000)
+* Backend API: [http://localhost:4000/api](http://localhost:4000/api)
+* Banco de dados: localhost:5432 (usuário: `postgres`, senha: `postgres`)
+
+> Observação: Prisma vai gerar o client e aplicar migrações automaticamente quando o backend subir.
+
+---
+
+
+
+---
+
+### Estrutura de pastas (Frontend)
+
+```
+──public
+└───src
+    ├───app
+    │   ├───auth
+    │   │   ├───login
+    │   │   └───register
+    │   ├───feedbacks
+    │   ├───profile
+    │   │   ├───edit
+    │   │   └───links
+    │   │       ├───new
+    │   │       └───[id]
+    │   │           └───edit
+    │   └───[username]
+    ├───components
+    │   └───ui
+    ├───hooks
+    ├───lib
+    └───types
+```
+
+---
+
+### Links do repositório
+
+* Backend: [https://github.com/iamrosada0/backend-Insightly](https://github.com/iamrosada0/backend-Insightly)
+* Frontend: [https://github.com/iamrosada0/frontend-Insightly](https://github.com/iamrosada0/frontend-Insightly)
+
+---
+
